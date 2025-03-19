@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyber services</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="bookings.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <div id="background1" class="background"></div>
+  <div id="background2" class="background"></div>
+  <header>
+    <div class="header-left">
+      <button id="menu-toggle" class="menu-button">&#9776;</button>
+      <div class="header-title">
+        <a href="cyberservices.html">
+          <img src="images/logo.png" alt="Logo" class="logo">
+        </a>
+        <span>cyber services</span>
+      </div>
+    </div>
+    <div class="search-bar">
+      <form action="#" method="get">
+        <input type="text" placeholder="Search..." name="query" />
+      </form>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <a href="cyberservices.html">Dashboard</a>
+      <a href="services.html">Apply for service</a>
+      <a href="login/login.html">Logout</a>
+    </aside>
+
+    <main id="main-content">
+      <h1 class="page-title">Dasboard</h1>
+      <section class="bookings-container">
+        <!-- Booking Card Example -->
+        <div class="booking-card">
+            <img src="images/images (1).jpeg" alt="Booking Image" class="booking-img" />
+            <div class="booking-details">
+              <h2>Service Name or Description</h2>
+              <p class="description">Detailed description of the service or what is in the picture.</p>
+              <p><span style="color:gold;"><strong>service Fee $200</strong></span></p>
+              <button class="book-btn"><a href="#"></a>Contact🤗🤗</button>
+            </div>
+          </div>
+          
+        <!-- You can duplicate this booking-card div for more bookings -->
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="social-icons">
+      <a href="https://wa.me/254748118290" class="icon whatsapp"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://x.com/ndungu9270?t=q_wt0ymI6Y-zAJVn_7xPnA&s=09" class="icon twitter"><i class="fab fa-x-twitter"></i></a>
+      <a href="https://www.instagram.com/ndungu_3610" class="icon instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.facebook.com/profile.php?id=100092341720577" class="icon facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="mailto:mosesgunb@gmail.com" class="icon email"><i class="fas fa-envelope"></i></a>
+    </div>
+
+    <div class="footer-marquee">
+      <p>cyber services</p>
+    </div>
+  </footer>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const container = document.querySelector(".bookings-container");
+      const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+    
+      bookings.forEach((booking) => {
+        const card = document.createElement("div");
+        card.className = "booking-card";
+    
+        card.innerHTML = `
+          <img src="${booking.image}" alt="Booking Image" class="booking-img" />
+          <div class="booking-details">
+            <h2>${booking.description}</h2>
+            <p><strong>Location:</strong> ${booking.location}</p>
+            <p><strong>Booking Fee:</strong> ${booking.fee}</p>
+            <p><strong>Available Until:</strong> ${booking.availability}</p>
+            <button class="book-btn">Book Now</button>
+          </div>
+        `;
+    
+        container.appendChild(card);
+      });
+    });
+    </script>    
+  <script src="../mainscript.js"></script>
+  </body>
+</html>

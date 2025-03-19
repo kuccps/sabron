@@ -384,7 +384,31 @@ opacity: 1;
     color: #333;
 }
                                  
-                                                                                                                                                                           
+.book-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.book-btn:hover {
+  background-color: #084298;
+}
+
+/* Responsive for mobile */
+@media (max-width: 600px) {
+  .booking-card {
+    width: 90%;
+  }
+}
+                                                                                                                                                              
                                                                                                                                                                                                                             
                                                                                                                                                                                                     
                                                                                                                                                                                                                                    

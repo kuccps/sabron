@@ -1,0 +1,109 @@
+/* Base reset and font */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #2c5364, #203a43, #0f2027);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* Container */
+  .login-container {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    color: white;
+    width: 300px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Titles */
+  .login-container h2 {
+    margin-bottom: 15px;
+    font-weight: 600;
+    font-size: 24px;
+  }
+  
+  /* Inputs */
+  .login-container input[type="text"],
+  .login-container input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+  
+  .login-container input::placeholder {
+    color: #ddd;
+  }
+  
+  /* Buttons */
+  .login-container button[type="submit"],
+  #submit-reset {
+    width: 100%;
+    padding: 12px;
+    background-color: gold;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    color: #2c2c2c;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+  }
+  
+  .login-container button[type="submit"]:hover,
+  #submit-reset:hover {
+    background-color: #e6c200;
+  }
+  
+  /* Sign Up and Reset Buttons */
+  .login-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .login-actions button {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid white;
+    padding: 10px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .login-actions button:hover {
+    background-color: white;
+    color: #2c5364;
+  }
+  
+  /* Login/Reset Messages */
+  #login-message,
+  #reset-message {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #ffcccc;
+    animation: blink 1s infinite;
+  }
+  
+  /* Beeping/Blinking Effect */
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }

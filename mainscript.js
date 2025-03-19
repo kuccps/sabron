@@ -81,8 +81,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const bookButtons = document.querySelectorAll(".book-btn") 
       bookButtons.forEach(button => {
       button.addEventListener("click", () => {
-      window.location.href = "services.html";
+      window.location.href = "details.html";
+      });
    });
   });
   
   
+
