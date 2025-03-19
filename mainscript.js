@@ -19,11 +19,30 @@ document.addEventListener('DOMContentLoaded', () => {
 // script.js
 
 const images = [
-'images/images (1).jpeg',
-'images/images (2).jpeg',
-'images/images (3).jpeg',
-'images/images (4).jpeg',
-'images/images (5).jpeg',
+'images/image1.png',
+'images/image2.png',
+'images/image3.png',
+'images/image4.png',
+'images/image.png',
+'images/images (6).jpeg',
+'images/images (7).jpeg',
+'images/images (8).jpeg',
+'images/images (9).jpeg',
+'images/images (10).jpeg',
+'images/images (11).jpeg',
+'images/images (12).jpeg',
+'images/images (13).jpeg',
+'images/images (14).jpeg',
+'images/images (15).jpeg',
+'images/images (16).jpeg',
+'images/images (17).jpeg',
+'images/images (18).jpeg',
+'images/images (19).jpeg',
+'images/images (20).jpeg',
+'images/images (21).jpeg',
+'images/images (22).jpeg',
+'images/images (23).jpeg',
+'images/contact-center.webp',
 ];
 
 let index = 0;

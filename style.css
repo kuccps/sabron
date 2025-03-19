@@ -11,7 +11,7 @@ body{
   height: 100%;
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center 20%;
+  background-position: center 50%;
   background-attachment: fixed;
   z-index: -1; /* Keep it behind content */
   opacity: 0;
