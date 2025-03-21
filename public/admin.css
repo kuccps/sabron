@@ -1,0 +1,99 @@
+/* General Page Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9f9f9;
+    margin: 20px;
+    color: #333;
+    line-height: 1.6;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+/* Button Styling */
+button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Logout and Clear Buttons */
+button.logout-btn {
+    background-color: #e74c3c;
+}
+
+button.logout-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Block/Unblock User Section */
+h3 {
+    margin-top: 30px;
+    color: #34495e;
+}
+
+input[type="email"] {
+    width: 300px;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Form Container */
+.block-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 20px;
+}
+
+table th, table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+table th {
+    background-color: #3498db;
+    color: white;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    input[type="email"] {
+        width: 100%;
+    }
+
+    .block-container {
+        padding: 10px;
+    }
+}

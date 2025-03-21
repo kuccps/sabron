@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill in Your Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb); /* Gradient background */
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        /* Form container */
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: khaki; /* Light gradient background */
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        /* Header styling */
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        /* Label styling */
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Input and textarea styling */
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        /* Button styling */
+        button {
+            background: #4CAF50; /* Green button */
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #45a049; /* Darker green on hover */
+        }
+
+        /* Error message styling */
+        #error-container {
+            display: none;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #FFD2D2;
+            color: #D8000C;
+            font-weight: 500;
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Fill in Your Details</h1>
+
+        <!-- Error message container -->
+        <div id="error-container"></div>
+
+        <!-- Form begins here -->
+        <form id="uploadForm" action="/submit" method="POST" enctype="multipart/form-data">
+
+            <!-- Full Name -->
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+
+            <!-- Phone Number -->
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" placeholder="Enter your phone number" required>
+
+            <!-- Email -->
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+
+            <!-- Description -->
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" placeholder="Describe your request" required></textarea>
+
+            <!-- Birth Certificate Upload -->
+            <label for="birthCertificate">Birth Certificate (PDF, JPG, JPEG):</label>
+            <input type="file" id="birthCertificate" name="birthCertificate" accept=".pdf,.jpg,.jpeg" required>
+
+            <!-- Result Slip Upload -->
+            <label for="resultSlip">Result Slip (PDF, JPG, JPEG):</label>
+            <input type="file" id="resultSlip" name="resultSlip" accept=".pdf,.jpg,.jpeg" required>
+
+            <!-- Submit Button -->
+            <button type="submit">Submit</button>
+
+        </form>
+    </div>
+
+    <!-- JavaScript for form handling -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('uploadForm');
+            const errorContainer = document.getElementById('error-container');
+
+            // Handle form submission
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Prevent normal form submission
+
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch('/submit', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    // Handle error response
+                    if (!response.ok) {
+                        const data = await response.json();
+                        showError(data.error || 'An unexpected error occurred.');
+                        return;
+                    }
+
+                    // Redirect on success
+                    window.location.href = '/success.html';
+                } catch (error) {
+                    showError('Enter the Correct Format of Documents.');
+                }
+            });
+
+            // Function to display error messages
+            function showError(message) {
+                errorContainer.textContent = message;
+                errorContainer.style.display = 'block';
+            }
+        });
+    </script>
+
+</body>
+
+</html>

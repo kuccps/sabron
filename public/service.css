@@ -1,0 +1,84 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f4f6;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 15px;
+}
+
+/* Container styling */
+.container {
+    background: rgb(173, 216, 18);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Header styling */
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+/* Form label styling */
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Input and textarea styling */
+input, textarea {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+/* Textarea height */
+textarea {
+    resize: none; /* Prevent resizing */
+    height: 120px;
+}
+
+/* File input styling */
+input[type="file"] {
+    padding: 0.5rem;
+}
+
+/* Submit button styling */
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    border: yes;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 100%;
+}
+
+/* Hover effect for button */
+button:hover {
+    background-color: #45a049;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem;
+    }
+}

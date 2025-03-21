@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <h1>Admin Dashboard</h1>
+
+    <table id="submissionsTable">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Description</th>
+                <th>Birth Certificate</th>
+                <th>Result Slip</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- User submissions will be populated here -->
+        </tbody>
+    </table>
+
+    <button onclick="logout()">Logout</button>
+    <button onclick="clearSubmissions()">Clear All Data</button>
+
+    <!-- Block User Form -->
+    <h3>Block a User</h3>
+    <input type="email" id="blockEmail" placeholder="Enter user email to block">
+    <button onclick="blockUser()">Block User</button>
+
+    <!-- Unblock User Form -->
+    <h3>Unblock a User</h3>
+    <input type="email" id="unblockEmail" placeholder="Enter user email to unblock">
+    <button onclick="unblockUser()">Unblock User</button>
+
+
+    <script>
+        // Ensure admin is logged in
+        if (!localStorage.getItem('isAdmin')) {
+            window.location.href = '/admin';
+        }
+
+       // Fetch User Submissions
+async function fetchSubmissions() {
+    try {
+        console.log('Fetching submissions...');
+        
+        const response = await fetch('/api/admin/submissions', {
+            credentials: 'include' // Ensure cookies (session) are sent
+        });
+
+        console.log('Response Status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch submissions');
+        }
+
+        const data = await response.json();
+        console.log('Fetched Data:', data); // Debugging log
+
+        renderSubmissions(data); // Ensure rendering is handled
+    } catch (error) {
+        console.error('Error fetching submissions:', error);
+    }
+}
+
+// Render submissions in the table
+function renderSubmissions(data) {
+    const tableBody = document.querySelector('#submissionsTable tbody');
+    tableBody.innerHTML = ''; // Clear previous entries
+
+    data.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.fullName}</td>
+            <td>${item.phone}</td>
+            <td>${item.email}</td>
+            <td>${item.description}</td>
+            <td><a href="/uploads/${item.birthCertificate}" target="_blank">View Birth Certificate</a></td>
+            <td><a href="/uploads/${item.resultSlip}" target="_blank">View Result Slip</a></td>
+            <td>${new Date(item.timestamp).toLocaleString()}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+
+
+        // Clear all submissions
+        async function clearSubmissions() {
+            if (confirm('Are you sure you want to clear all user data?')) {
+                try {
+                    const response = await fetch('/api/admin/clear-submissions', { method: 'DELETE' });
+                    if (!response.ok) throw new Error('Failed to clear data');
+                    alert('All user data cleared.');
+                    fetchSubmissions(); // Refresh table
+                } catch (error) {
+                    console.error('Error clearing data:', error);
+                    alert('Failed to clear data.');
+                }
+            }
+        }
+
+        // Block a user by email
+        async function blockUser() {
+            const email = document.getElementById('blockEmail').value.trim();
+            if (!email) return alert('Please enter a valid email to block.');
+
+            try {
+                const response = await fetch('/api/admin/block-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                if (!response.ok) throw new Error('Failed to block user');
+                alert(`User with email ${email} has been blocked.`);
+            } catch (error) {
+                console.error('Error blocking user:', error);
+                alert('Failed to block user.');
+            }
+        }
+
+        // Unblock a user by email
+        async function unblockUser() {
+            const email = document.getElementById('unblockEmail').value.trim();
+            if (!email) return alert('Please enter a valid email to unblock.');
+
+            try {
+                const response = await fetch('/api/admin/unblock-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                if (!response.ok) throw new Error('Failed to unblock user');
+                alert(`User with email ${email} has been unblocked.`);
+            } catch (error) {
+                console.error('Error unblocking user:', error);
+                alert('Failed to unblock user.');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('isAdmin');
+            window.location.href = '/admin-login.html';
+        }
+
+        // Load submissions on page load
+        window.onload = fetchSubmissions;
+    </script>
+
+</body>
+
+</html>
