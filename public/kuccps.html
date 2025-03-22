@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/logout.js"></script>
     <title>KUCCPS Application Form</title>
     <style>
         body {
@@ -18,7 +19,7 @@
 
         form {
             margin: 0 auto;
-            background: #fff;
+            background: rgb(23, 100, 7);
             padding: 32px;
             border-radius: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -58,6 +59,27 @@
             margin-top: 20px;
             font-weight: bold;
         }
+
+        /* Loading circle styling */
+        .loader {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            margin-left: 8px; /* Space between text and circle */
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -76,35 +98,45 @@
         <input type="email" id="email" name="email" required>
 
         <label for="description">Description:</label>
-        <textarea id="description" name="description" rows="4" required></textarea>
+        <textarea id="description" name="description" rows="6" required></textarea>
 
         <label for="indexNumber">KCSE Index Number:</label>
-        <input type="text" id="indexNumber" name="indexNumber" required maxlength="11" pattern="\d{11}" title="Index Number must be exactly 11 digits.">
-        
+        <input type="text" id="indexNumber" name="indexNumber" required maxlength="11" pattern="\d{11}"
+            title="Index Number must be exactly 11 digits.">
+
         <label for="kcseYear">KCSE Year:</label>
         <input type="number" id="kcseYear" name="kcseYear" min="2000" max="2100" required>
 
         <label for="birthCertNumber">Birth Certificate Number:</label>
-        <input type="text" id="birthCertNumber" name="birthCertNumber" required >
+        <input type="text" id="birthCertNumber" name="birthCertNumber" required>
 
-        <label for="primaryIndexNumber"> KCPE Index Number:</label>
-        <input type="text" id="primaryIndexNumber" name="primaryIndexNumber"  required maxlength="11" pattern="\d{11}" title="KCPE Index Number must be exactly 11 digits.">
+        <label for="primaryIndexNumber">KCPE Index Number:</label>
+        <input type="text" id="primaryIndexNumber" name="primaryIndexNumber" required maxlength="11" pattern="\d{11}"
+            title="KCPE Index Number must be exactly 11 digits.">
 
-    
-        <button type="submit">Submit</button>
+        <!-- Submit Button with Loading Spinner -->
+        <button type="submit" id="submitButton">
+            Submit
+            <span id="loadingCircle" style="display: none;" class="loader"></span>
+        </button>
+
     </form>
 
+    <!-- Status message display -->
     <div id="status"></div>
 
     <script>
         const form = document.getElementById('kuccpsForm');
         const statusDiv = document.getElementById('status');
+        const loadingCircle = document.getElementById('loadingCircle');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            // Display loading spinner and status message
             const formData = new FormData(form);
             statusDiv.textContent = 'Submitting...';
+            loadingCircle.style.display = 'inline-block';
 
             try {
                 const response = await fetch('/submit-kuccps', {
@@ -113,20 +145,23 @@
                 });
 
                 if (response.ok) {
-            // Redirect to success page if submission is successful
-            window.location.href = '/success.html';
-        } else {
-            // Handle errors from the server
-            const errorData = await response.json();
-            statusDiv.textContent = errorData.error || 'Submission failed!';
-        }
-    } catch (error) {
-        // Handle network or other unexpected errors
-        statusDiv.textContent = 'Error submitting form. Please try again.';
-        console.error('Submission Error:', error);
-    }
-});
-</script>
+                    // Redirect to success page if submission is successful
+                    window.location.href = '/success.html';
+                } else {
+                    // Handle errors from the server
+                    const errorData = await response.json();
+                    statusDiv.textContent = errorData.error || 'Submission failed!';
+                }
+            } catch (error) {
+                // Handle network or other unexpected errors
+                statusDiv.textContent = 'Error submitting form. Please try again.';
+                console.error('Submission Error:', error);
+            } finally {
+                // Hide the loading circle after request completion
+                loadingCircle.style.display = 'none';
+            }
+        });
+    </script>
 
 </body>
 

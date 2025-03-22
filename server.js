@@ -292,3 +292,25 @@ addColumns.forEach(({ name, type }) => {
         }
     });
 });
+
+
+// Logout route (clears session)
+app.post('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Logout failed' });
+        }
+        res.clearCookie('sessionId'); // Clear session cookie if used
+        res.status(200).json({ message: 'Logged out successfully' });
+    });
+});
+
+
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 300000 // 5 minutes
+    }
+}));

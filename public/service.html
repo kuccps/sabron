@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fill in Your Details</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="/logout.js"></script>
     <style>
         /* General body styling */
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #4e54c8, #8f94fb); /* Gradient background */
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
             color: #333;
             padding: 20px;
             display: flex;
@@ -25,7 +26,7 @@
         .container {
             max-width: 600px;
             width: 100%;
-            background: khaki; /* Light gradient background */
+            background: khaki;
             padding: 40px;
             border-radius: 16px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
@@ -47,7 +48,8 @@
         }
 
         /* Input and textarea styling */
-        input, textarea {
+        input,
+        textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 20px;
@@ -59,7 +61,7 @@
 
         /* Button styling */
         button {
-            background: #4CAF50; /* Green button */
+            background: #4CAF50;
             color: white;
             padding: 14px;
             border: none;
@@ -68,10 +70,13 @@
             width: 100%;
             font-size: 16px;
             transition: background 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         button:hover {
-            background: #45a049; /* Darker green on hover */
+            background: #45a049;
         }
 
         /* Error message styling */
@@ -85,12 +90,35 @@
             font-weight: 500;
         }
 
+        /* Loading spinner styling */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            display: none; /* Initially hidden */
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
         /* Fade-in animation */
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -124,7 +152,7 @@
 
             <!-- Description -->
             <label for="description">Description:</label>
-            <textarea id="description" name="description" rows="4" placeholder="Describe your request" required></textarea>
+            <textarea id="description" name="description" rows="6" placeholder="Describe your request" required></textarea>
 
             <!-- Birth Certificate Upload -->
             <label for="birthCertificate">Birth Certificate (PDF, JPG, JPEG):</label>
@@ -135,7 +163,10 @@
             <input type="file" id="resultSlip" name="resultSlip" accept=".pdf,.jpg,.jpeg" required>
 
             <!-- Submit Button -->
-            <button type="submit">Submit</button>
+            <button type="submit" id="submitButton">
+                Submit
+                <span id="loadingCircle" class="loader"></span>
+            </button>
 
         </form>
     </div>
@@ -145,10 +176,16 @@
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('uploadForm');
             const errorContainer = document.getElementById('error-container');
+            const submitButton = document.getElementById('submitButton');
+            const loadingCircle = document.getElementById('loadingCircle');
 
             // Handle form submission
             form.addEventListener('submit', async (event) => {
                 event.preventDefault(); // Prevent normal form submission
+
+                // Show the loading circle and disable the submit button
+                loadingCircle.style.display = 'inline-block';
+                submitButton.disabled = true;
 
                 const formData = new FormData(form);
 
@@ -169,6 +206,10 @@
                     window.location.href = '/success.html';
                 } catch (error) {
                     showError('Enter the Correct Format of Documents.');
+                } finally {
+                    // Hide loading circle and re-enable submit button
+                    loadingCircle.style.display = 'none';
+                    submitButton.disabled = false;
                 }
             });
 
