@@ -1,28 +1,35 @@
 const express = require('express');
-const multer = require('multer');
+const formidable = require('formidable');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const session = require('express-session');
+const fs = require('fs');
 
 const app = express();
 const port = 3000;
 
-// Middleware
-app.use(express.static('public'));
+// Ensure uploads directory exists
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+
 // Middleware
 app.use(express.static('public'));
 app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(session({
-  secret: 'your_secret_key',
+    secret: 'your-secret-key',
     resave: false,
-      saveUninitialized: true
-      }));
+    saveUninitialized: true,
+    cookie: { secure: false }
+}));
 
 // Initialize SQLite database
-const db = new sqlite3.Database('./submissions.db');
+const db = new sqlite3.Database('./submissions.db', (err) => {
+    if (err) console.error('Error connecting to database:', err.message);
+    else console.log('Connected to SQLite database.');
+});
 
-// Ensure the 'submissions' table with 'timestamp' exists
+// Ensure tables exist
 db.run(`
     CREATE TABLE IF NOT EXISTS submissions (
         id INTEGER PRIMARY KEY,
@@ -36,31 +43,23 @@ db.run(`
     )
 `);
 
+
 db.run(`CREATE TABLE IF NOT EXISTS blocked_users (email TEXT UNIQUE)`);
 
 // Cache Blocked Users
 const blockedUsers = new Set();
 db.all('SELECT email FROM blocked_users', (err, rows) => {
     if (!err) rows.forEach(row => blockedUsers.add(row.email));
+    
+
+
+
+
 });
 
-// File Upload Configuration (Preserve Extension)
-const storage = multer.diskStorage({
-    destination: 'uploads/',
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const extension = path.extname(file.originalname); // Keep original extension
-        cb(null, file.fieldname + '-' + uniqueSuffix + extension); // e.g., birthCertificate-12345.pdf
-    }
-});
 
-const upload = multer({
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg'];
-        allowedTypes.includes(file.mimetype) ? cb(null, true) : cb(new Error('Invalid file type.'));
-    }
-});
+
+
 
 // Admin Authentication Middleware
 function requireAdminAuth(req, res, next) {
@@ -88,40 +87,69 @@ app.get('/admin/logout', (req, res) => {
     req.session.destroy(() => res.redirect('/admin'));
 });
 
-// Form Submission (with Block Check)
-app.post('/submit', upload.fields([{ name: 'birthCertificate' }, { name: 'resultSlip' }]), (req, res) => {
-    const { fullName, phone, email, description } = req.body;
+// Form Submission (with Block Check) - GMT+3 Timestamp
+app.post('/submit', (req, res) => {
+    const form = new formidable.IncomingForm({
+        uploadDir: uploadDir,
+        keepExtensions: true,
+        maxFileSize: 10 * 1024 * 1024, // 10MB limit
+        multiples: true,
+    });
 
-    if (!req.files['birthCertificate'] || !req.files['resultSlip']) {
-        return res.status(400).json({ error: 'Missing required files' });
-    }
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            console.error('Form parsing error:', err);
+            return res.status(400).json({ error: 'File upload error.' });
+        }
 
-    const birthCertificate = req.files['birthCertificate'][0].filename;
-    const resultSlip = req.files['resultSlip'][0].filename;
+        // Ensure fields are correctly accessed
+        const fullName = fields.fullName ? fields.fullName[0] : '';
+        const phone = fields.phone ? fields.phone[0] : '';
+        const email = fields.email ? fields.email[0] : '';
+        const description = fields.description ? fields.description[0] : '';
 
-    if (blockedUsers.has(email)) return res.status(403).json({ error: 'Access Denied. You are blocked.' });
+        if (!fullName || !phone || !email || !description) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
 
-    db.run(`INSERT INTO submissions (fullName, phone, email, description, birthCertificate, resultSlip) 
-            VALUES (?, ?, ?, ?, ?, ?)`,
-        [fullName, phone, email, description, birthCertificate, resultSlip],
-        (err) => {
-            if (err) return res.status(500).json({ error: 'Internal Server Error' });
-            res.redirect('/success.html');
-        });
+        if (!files.birthCertificate || !files.resultSlip) {
+            return res.status(400).json({ error: 'Missing required files.' });
+        }
+
+        if (blockedUsers.has(email)) return res.status(403).json({ error: 'Access Denied. You are blocked.' });
+
+        // Get uploaded file names
+        const birthCertificate = path.basename(files.birthCertificate[0].filepath);
+        const resultSlip = path.basename(files.resultSlip[0].filepath);
+
+        // Get current time in GMT+3
+        const timestampGMT3 = new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19);
+
+        db.run(`
+            INSERT INTO submissions (fullName, phone, email, description, birthCertificate, resultSlip, timestamp) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `,
+            [fullName, phone, email, description, birthCertificate, resultSlip, timestampGMT3],
+            (err) => {
+                if (err) {
+                    console.error('Database Insert Error:', err);
+                    return res.status(500).json({ error: 'Internal Server Error' });
+                }
+                res.redirect('/success.html');
+            });
+    });
 });
 
 // Fetch All Submissions (Admin Only)
 app.get('/api/admin/submissions', requireAdminAuth, (req, res) => {
-    console.log('Fetching submissions...');
+    
+    
     db.all('SELECT * FROM submissions ORDER BY timestamp DESC', (err, rows) => {
-        if (err) {
-            console.error('Database Error:', err);
-            return res.status(500).json({ error: 'Error fetching submissions' });
-        }
-        console.log('Fetched Rows:', rows);
+        if (err) return res.status(500).json({ error: 'Error fetching submissions' });
         res.json(rows);
     });
 });
+
 
 
 // Clear All Submissions
@@ -139,8 +167,11 @@ app.post('/api/admin/block-user', requireAdminAuth, (req, res) => {
 
     db.run('INSERT OR IGNORE INTO blocked_users (email) VALUES (?)', [email], (err) => {
         if (err) return res.status(500).send('Error blocking user');
+    
+    
         blockedUsers.add(email);
-        console.log(`User blocked: ${email}`);
+    
+    
         res.sendStatus(200);
     });
 });
@@ -152,8 +183,11 @@ app.post('/api/admin/unblock-user', requireAdminAuth, (req, res) => {
 
     db.run('DELETE FROM blocked_users WHERE email = ?', [email], (err) => {
         if (err) return res.status(500).send('Error unblocking user');
+   
+   
         blockedUsers.delete(email);
-        console.log(`User unblocked: ${email}`);
+   
+   
         res.sendStatus(200);
     });
 });
@@ -161,15 +195,12 @@ app.post('/api/admin/unblock-user', requireAdminAuth, (req, res) => {
 // Improved Download Route
 app.get('/api/download/:filename', (req, res) => {
     const { filename } = req.params;
-    const filePath = path.join(__dirname, 'uploads', filename);
+    const filePath = path.join(uploadDir, filename);
 
-    db.get('SELECT birthCertificate, resultSlip FROM submissions WHERE birthCertificate = ? OR resultSlip = ?', [filename, filename], (err, row) => {
-        if (err || !row) return res.status(404).send('File not found.');
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) return res.status(404).send('File not found.');
 
-        // Use original uploaded filename
-        const originalFilename = row.birthCertificate === filename ? 'birth_certificate.pdf' : 'result_slip.pdf';
-
-        res.download(filePath, originalFilename, (downloadErr) => {
+        res.download(filePath, filename, (downloadErr) => {
             if (downloadErr) res.status(500).send('Error downloading file.');
         });
     });
