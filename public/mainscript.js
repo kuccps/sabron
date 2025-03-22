@@ -106,31 +106,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     
-// Auto logout after 5 minutes of inactivity
+// Auto logout after 5 seconds (for testing, change to 300000 for 5 minutes)
 let logoutTimer;
 
 // Function to reset the timer
 function resetLogoutTimer() {
     clearTimeout(logoutTimer);
-    logoutTimer = setTimeout(logUserOut, 300000); // 300,000 ms = 5 minutes
+    logoutTimer = setTimeout(logUserOut, 300000); 
 }
 
 // Function to log the user out
 async function logUserOut() {
     try {
-        // Send a logout request to the server
+        // Send logout request to the server (optional, if needed)
         await fetch('/logout', { method: 'POST' });
-        window.location.href = '/login.html'; // Redirect to login page after logout
+
+        // Redirect to the login page
+        window.location.href = 'user-login.html';
     } catch (error) {
         console.error('Error logging out:', error);
     }
 }
 
-// Reset the timer on user activity (mousemove, keydown, click)
+// Reset timer on user activity (mousemove, keydown, click)
 document.addEventListener('mousemove', resetLogoutTimer);
 document.addEventListener('keydown', resetLogoutTimer);
 document.addEventListener('click', resetLogoutTimer);
 
-// Start the timer on page load
+// Start logout timer when page loads
 resetLogoutTimer();
-  

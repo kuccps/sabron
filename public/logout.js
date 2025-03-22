@@ -11,7 +11,7 @@ function resetLogoutTimer() {
 async function logUserOut() {
     try {
         await fetch('/logout', { method: 'POST' });
-        window.location.href = '/login.html'; // Redirect to login page
+        window.location.href = 'user-login.html'; // Redirect to login page
     } catch (error) {
         console.error('Error logging out:', error);
     }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/logout.js"></script>
+    
     <title>KUCCPS Application Form</title>
     <style>
         body {
@@ -50,6 +50,11 @@
             cursor: pointer;
         }
 
+        button:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+
         button:hover {
             background-color: #0c051d;
         }
@@ -92,8 +97,10 @@
         <input type="text" id="fullName" name="fullName" required>
 
         <label for="phone">Phone Number:</label>
-        <input type="text" id="phone" name="phone" required>
-
+        <input type="text" id="phone" name="phone" required
+               pattern="^(254\d{9}|07\d{8})$" 
+               title="Phone number must start with '254' (e.g., 2547XXXXXXXX) or '07' (e.g., 07XXXXXXXX)">
+        
         <label for="email">Email Address:</label>
         <input type="email" id="email" name="email" required>
 
@@ -108,14 +115,22 @@
         <input type="number" id="kcseYear" name="kcseYear" min="2000" max="2100" required>
 
         <label for="birthCertNumber">Birth Certificate Number:</label>
-        <input type="text" id="birthCertNumber" name="birthCertNumber" required>
+        <input type="text" id="birthCertNumber" name="birthCertNumber" required
+         pattern="^\d+$" 
+         title="Birth Certificate Number must contain digits only.">
 
         <label for="primaryIndexNumber">KCPE Index Number:</label>
         <input type="text" id="primaryIndexNumber" name="primaryIndexNumber" required maxlength="11" pattern="\d{11}"
             title="KCPE Index Number must be exactly 11 digits.">
 
+        <!-- Confirmation Checkbox -->
+        <label for="confirm">
+            <input type="checkbox" id="confirm" name="confirm">
+            I confirm that the information provided is accurate.
+        </label>
+
         <!-- Submit Button with Loading Spinner -->
-        <button type="submit" id="submitButton">
+        <button type="submit" id="submitButton" disabled>
             Submit
             <span id="loadingCircle" style="display: none;" class="loader"></span>
         </button>
@@ -129,6 +144,13 @@
         const form = document.getElementById('kuccpsForm');
         const statusDiv = document.getElementById('status');
         const loadingCircle = document.getElementById('loadingCircle');
+        const submitButton = document.getElementById('submitButton');
+        const confirmCheckbox = document.getElementById('confirm');
+
+        // Enable submit button only if checkbox is checked
+        confirmCheckbox.addEventListener('change', () => {
+            submitButton.disabled = !confirmCheckbox.checked;
+        });
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -161,6 +183,9 @@
                 loadingCircle.style.display = 'none';
             }
         });
+
+        src="/logout.js";
+        
     </script>
 
 </body>
