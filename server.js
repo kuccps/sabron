@@ -208,3 +208,87 @@ app.get('/api/download/:filename', (req, res) => {
 
 // Start Server
 app.listen(port, () => console.log(`🚀 Server running at http://localhost:${port}`));
+
+
+// KUCCPS Form Submission (without file upload)
+app.post('/submit-kuccps', (req, res) => {
+    const form = new formidable.IncomingForm({
+        multiples: false, // No multiple file uploads needed
+    });
+
+    form.parse(req, (err, fields) => {
+        if (err) {
+            console.error('Form Parsing Error:', err);
+            return res.status(400).json({ error: 'Error processing form submission.' });
+        }
+
+        // Extract fields
+        const {
+            fullName, phone, email, description,
+            indexNumber, kcseYear, birthCertNumber, primaryIndexNumber
+        } = fields;
+
+        // Validate required fields
+        if (!fullName || !phone || !email || !description || !indexNumber || !kcseYear || !birthCertNumber || !primaryIndexNumber) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        // Prevent blocked users from submitting
+        if (blockedUsers.has(email[0])) {
+            return res.status(403).json({ error: 'Access denied. You are blocked.' });
+        }
+
+        // Ensure we get correct field values
+        const fullNameValue = fullName[0];
+        const phoneValue = phone[0];
+        const emailValue = email[0];
+        const descriptionValue = description[0];
+        const indexNumberValue = indexNumber[0];
+        const kcseYearValue = kcseYear[0];
+        const birthCertNumberValue = birthCertNumber[0];
+        const primaryIndexNumberValue = primaryIndexNumber[0];
+
+        // Get current timestamp in GMT+3
+        const timestampGMT3 = new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19);
+
+        // Insert into database
+        db.run(`
+            INSERT INTO submissions (
+                fullName, phone, email, description, indexNumber, kcseYear, birthCertNumber, primaryIndexNumber, timestamp
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `,
+            [fullNameValue, phoneValue, emailValue, descriptionValue, indexNumberValue, kcseYearValue, birthCertNumberValue, primaryIndexNumberValue, timestampGMT3],
+            (err) => {
+                if (err) {
+                    console.error('Database Insert Error:', err);
+                    return res.status(500).json({ error: 'Database error during submission.' });
+                }
+                res.status(200).json({ message: 'Form submitted successfully!' });
+            });
+    });
+});
+
+// Add new fields if they do not exist
+const addColumns = [
+    { name: 'indexNumber', type: 'TEXT' },
+    { name: 'kcseYear', type: 'INTEGER' },
+    { name: 'birthCertNumber', type: 'TEXT' },
+    { name: 'primaryIndexNumber', type: 'TEXT' },
+];
+
+addColumns.forEach(({ name, type }) => {
+    db.all(`PRAGMA table_info(submissions)`, (err, rows) => {
+        if (err) {
+            console.error('Error checking table schema:', err.message);
+            return;
+        }
+
+        const columnExists = rows.some(row => row.name === name);
+        if (!columnExists) {
+            db.run(`ALTER TABLE submissions ADD COLUMN ${name} ${type}`, (err) => {
+                if (err) console.error(`Error adding column ${name}:`, err.message);
+                else console.log(`✅ Column "${name}" added successfully.`);
+            });
+        }
+    });
+});
