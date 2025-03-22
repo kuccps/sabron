@@ -46,22 +46,7 @@ db.run(`
 
 db.run(`CREATE TABLE IF NOT EXISTS blocked_users (email TEXT UNIQUE)`);
 
-// Cache Blocked Users
-const blockedUsers = new Set();
-db.all('SELECT email FROM blocked_users', (err, rows) => {
-    if (!err) rows.forEach(row => blockedUsers.add(row.email));
-    
-
-
-
-
-});
-
-
-
-
-
-// Admin Authentication Middleware
+//Admin Authentication Middleware
 function requireAdminAuth(req, res, next) {
     if (!req.session.isAdmin) return res.status(401).send('Unauthorized');
     next();
@@ -192,6 +177,12 @@ app.post('/api/admin/unblock-user', requireAdminAuth, (req, res) => {
     });
 });
 
+
+
+
+
+
+
 // Improved Download Route
 app.get('/api/download/:filename', (req, res) => {
     const { filename } = req.params;
@@ -206,8 +197,8 @@ app.get('/api/download/:filename', (req, res) => {
     });
 });
 
-// Start Server
-app.listen(port, () => console.log(`🚀 Server running at http://localhost:${port}`));
+
+
 
 
 // KUCCPS Form Submission (without file upload)
@@ -237,6 +228,15 @@ app.post('/submit-kuccps', (req, res) => {
         if (blockedUsers.has(email[0])) {
             return res.status(403).json({ error: 'Access denied. You are blocked.' });
         }
+
+        app.post('/submit', (req, res) => {
+            if (req.session.userEmail && blockedUsers.has(`${req.session.userEmail}-${req.sessionID}`)) {
+                return res.status(403).send('Submission denied: You are blocked.');
+            }
+        
+            res.send('Form submitted successfully.');
+        });
+        
 
         // Ensure we get correct field values
         const fullNameValue = fullName[0];
@@ -314,3 +314,10 @@ app.use(session({
         maxAge: 300000 // 5 minutes
     }
 }));
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
+const blockedUsers = new Set();

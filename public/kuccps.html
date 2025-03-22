@@ -19,11 +19,11 @@
 
         form {
             margin: 0 auto;
-            background: rgb(23, 100, 7);
+            background: khaki;
             padding: 32px;
-            border-radius: 20px;
+            border-radius: 30px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 50%;
+            width: 40%;
         }
 
         label {
@@ -38,7 +38,7 @@
             padding: 15px;
             margin-top: 5px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 10px;
             width: 95%;
             display: center;
         }
@@ -124,10 +124,63 @@
             title="KCPE Index Number must be exactly 11 digits.">
 
         <!-- Confirmation Checkbox -->
-        <label for="confirm">
-            <input type="checkbox" id="confirm" name="confirm">
-            I confirm that the information provided is accurate.
-        </label>
+<label for="confirm" class="confirm-label">
+    <input type="checkbox" id="confirm" name="confirm" class="confirm-checkbox">
+    <span class="custom-checkbox"></span>
+    Confirm Your Details are Correct
+</label>
+
+<!-- CSS Styling -->
+<style>
+    /* Checkbox container styling */
+    .confirm-label {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Space between checkbox and text */
+        font-size: 16px;
+        font-weight: bold;
+        color: #2c3e50; /* Dark grey text */
+        cursor: pointer; /* Pointer for better UX */
+        margin-top: 20px;
+    }
+
+    /* Hide the default checkbox */
+    .confirm-checkbox {
+        display: none; 
+    }
+
+    /* Custom checkbox appearance */
+    .custom-checkbox {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #4CAF50; /* Green border */
+        border-radius: 5px; /* Rounded corners */
+        display: inline-block;
+        position: relative;
+        transition: background 0.3s ease;
+    }
+
+    /* Checkmark when checked */
+    .confirm-checkbox:checked + .custom-checkbox::after {
+        content: '✔';
+        position: absolute;
+        top: 0;
+        left: 3px;
+        color: white;
+        font-size: 16px;
+        line-height: 20px;
+    }
+
+    /* Background color on check */
+    .confirm-checkbox:checked + .custom-checkbox {
+        background-color: #4CAF50; /* Green background when checked */
+    }
+
+    /* Hover effect */
+    .custom-checkbox:hover {
+        border-color: #45a049; /* Darker green border on hover */
+    }
+</style>
 
         <!-- Submit Button with Loading Spinner -->
         <button type="submit" id="submitButton" disabled>

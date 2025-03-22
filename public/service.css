@@ -2,23 +2,24 @@
 body {
     font-family: Arial, sans-serif;
     background: #f3f4f6;
-    margin: 0;
+    margin: 20px;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
-    padding: 15px;
+    padding: 20px;
 }
 
 /* Container styling */
 .container {
     background: rgb(173, 216, 18);
     padding: 2rem;
-    border-radius: 12px;
+    border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 600px;
+    margin: 0;
 }
 
 /* Header styling */
@@ -42,7 +43,7 @@ input, textarea {
     padding: 0.8rem;
     margin-bottom: 1rem;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 1rem;
     box-sizing: border-box;
 }
