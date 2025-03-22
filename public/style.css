@@ -22,7 +22,7 @@ body{
       opacity: 1;
   }
   
-    color: rgb(140, 147, 240);
+    color: black;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
     }
     
@@ -229,6 +229,7 @@ body{
     min-height: calc(100vh - 60px); /* Viewport minus header */
     width: 100%;
     box-sizing: border-box;
+    background: rgb(218, 207, 115);
   }
   
   .menu-button {
@@ -343,11 +344,15 @@ body{
   color: #2c3e50;          /* Dark blue for contrast */
 }
   
+h1, h2 {
+  color: blueviolet; /* Dark green text */
+}
 
+a {
+  text-decoration: none;
+  color: #6A0DAD;
+}
 
-
-                                                                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                      
                                                                                                                                                                                                                                      
                                                                                                                                                                                                                                        
                                                                                                                                                                                                                                          
