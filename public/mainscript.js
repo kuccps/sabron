@@ -135,3 +135,29 @@ document.addEventListener('click', resetLogoutTimer);
 
 // Start logout timer when page loads
 resetLogoutTimer();
+
+// Middleware to protect routes
+function isAuthenticated(req, res, next) {
+  if (req.session && req.session.user) {
+      return next(); // Proceed if user is logged in
+  }
+  res.redirect('/user-login.html'); // Redirect to login if not authenticated
+}
+
+// Protecting the KUCCPS, Cyber Services, and Services pages
+app.get('/kuccps.html', isAuthenticated, (req, res) => {
+  res.sendFile(__dirname + '/public/kuccps.html');
+});
+
+app.get('/cyberservices.html', isAuthenticated, (req, res) => {
+  res.sendFile(__dirname + '/public/cyberservices.html');
+});
+
+app.get('/services.html', isAuthenticated, (req, res) => {
+  res.sendFile(__dirname + '/public/services.html');
+});
+
+app.get('/kra.html', isAuthenticated,(req, res) =>
+  {res.sendFile(__dirname +'/public/services.html'
+)});
+
