@@ -1,0 +1,20 @@
+User-agent: *
+
+Disallow: /admin-login.html
+
+
+Disallow: /admin.html
+
+Disallow: /cyberservices.html
+Disallow: /index.html
+Disallow: /kra.html
+Disallow: /kuccps.html
+
+
+Disallow: /service.html
+Disallow: /success.html
+Disallow: /user-about.html
+
+Disallow: /user-login.html
+
+Disallow: /user-signup.html
