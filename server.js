@@ -321,3 +321,52 @@ app.listen(PORT, '0.0.0.0', () => {
 });
 
 const blockedUsers = new Set();
+
+// Middleware to check if user is authenticated
+const isAuthenticated = (req, res, next) => {
+    if (req.session && req.session.user) {
+        return next(); // User is logged in, proceed
+    }
+    res.redirect('/user-login.html'); // Redirect to login if not authenticated
+};
+
+
+app.get('/api/check-auth', (req, res) => {
+    if (req.session && req.session.user) {
+        res.sendStatus(200); // User is authenticated
+    } else {
+        res.sendStatus(401); // Unauthorized
+    }
+});
+
+
+// Protecting the KUCCPS, Cyber Services, and Services pages
+app.get('/kuccps.html', isAuthenticated, (req, res) => {
+    res.sendFile(__dirname + '/public/kuccps.html');
+});
+
+app.get('/cyberservices.html', isAuthenticated, (req, res) => {
+    res.sendFile(__dirname + '/public/cyberservices.html');
+});
+
+app.get('/services.html', isAuthenticated, (req, res) => {
+    res.sendFile(__dirname + '/public/services.html');
+});
+
+app.get('/kra.html', isAuthenticated,(req, res) =>
+    {res.sendFile(__dirname +'/public/services.html'
+)});
+
+// Login route example
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    // Example: Validate user (replace with your DB check)
+    const user = await User.findOne({ username, password });
+    if (user) {
+        req.session.user = user; // Store user in session
+        res.redirect('/public.kuccps.html'); // Redirect to KUCCPS page
+    } else {
+        res.status(401).send('Invalid credentials');
+    }
+});
