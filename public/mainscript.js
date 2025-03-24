@@ -141,7 +141,7 @@ function isAuthenticated(req, res, next) {
   if (req.session && req.session.user) {
       return next(); // Proceed if user is logged in
   }
-  res.redirect('/user-login.html'); // Redirect to login if not authenticated
+  res.redirect('/index.html'); // Redirect to login if not authenticated
 }
 
 // Protecting the KUCCPS, Cyber Services, and Services pages
