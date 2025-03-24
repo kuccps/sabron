@@ -345,9 +345,6 @@ app.get('/kuccps.html', isAuthenticated, (req, res) => {
     res.sendFile(__dirname + '/public/kuccps.html');
 });
 
-app.get('/cyberservices.html', isAuthenticated, (req, res) => {
-    res.sendFile(__dirname + '/public/cyberservices.html');
-});
 
 app.get('/services.html', isAuthenticated, (req, res) => {
     res.sendFile(__dirname + '/public/services.html');
