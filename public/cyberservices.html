@@ -38,7 +38,51 @@
       <a href="kra.html">Apply KRA</a>
       <a href="index.html">Logout</a>
     </aside>
+ <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
 
+        .marquee {
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            position: relative;
+            background: red;
+            padding: 10px 0;
+        }
+
+        .marquee p {
+            display: inline-block;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            animation: moveText 8s linear infinite;
+        }
+
+        @keyframes moveText {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="marquee">
+        <p>⚠️ Notice Notice ⚠️ Don't Apply within this website for now. We will be right back. ⚠️</p>
+    </div>
     <main id="main-content">
       <h1 class="page-title">Dasboard</h1>
       <h2>We offer The following Services: </h2>
