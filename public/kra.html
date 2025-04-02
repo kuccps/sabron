@@ -66,17 +66,7 @@
         }, 10000); // 1000ms = 1 seconds
 
          src="/logout.js"
-    </script>
-    <script>
-        fetch('/api/check-auth')
-            .then(response => {
-                if (response.status !== 200) {
-                    window.location.href = '/user-login.html';
-                }
-            });
-    </script>
-    
-
+    </script> 
 </body>
 
 </html>
